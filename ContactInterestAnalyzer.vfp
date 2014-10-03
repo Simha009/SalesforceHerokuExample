@@ -1,0 +1,171 @@
+<apex:page sidebar="false" standardController="Contact" recordSetvar="contacts">
+    <style>
+
+        .hashtag{
+        color: #F20930;
+        }
+
+        .tweetBlock{
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 12pt;
+        border: 1px;
+        border-style: solid;
+        border-color: #E1E8Ed;
+        background: #F5F8Fa;
+        padding-right : 15px;
+        }
+
+        .tweetDate{
+        font-size: 10pt;
+        }
+
+        #logger{
+        font-size: 12pt;
+        color: #F20930;
+        }
+
+    </style>
+
+    <apex:includeScript value="{!URLFOR($Resource.JQuery, '/jquery-1.8.3.min.js')}"  />
+    <apex:includeScript value="{!URLFOR($Resource.HighCharts, '/highcharts-all.js')}"  />
+    <apex:includeScript value="{!URLFOR($Resource.HighCharts, '/themes/dark-unica.js')}"  />
+
+    <table border="0" width="100%">
+        <tr>
+            <td valign="top" width="25%">
+                <apex:pageBlock title="Contacts">
+                    <apex:form id="theForm">
+                        <apex:panelGrid columns="2">
+                            <apex:outputLabel value="View:"/>
+                            <apex:selectList value="{!filterId}" size="1">
+                                <apex:actionSupport event="onchange" rerender="list"/>
+                                <apex:selectOptions value="{!listviewoptions}"/>
+                            </apex:selectList>
+                        </apex:panelGrid>
+                        <p>Click on the Contact name below to analyze interest</p>
+                        <apex:dataList var="c" value="{!contacts}" id="list">
+                            <a href="#" onClick="fetchTweetData('{!c.Twitter_Handle__c}');">{!c.name}</a>
+                        </apex:dataList>
+                    </apex:form>
+                </apex:pageBlock>
+            </td>
+            <td valign="top">
+                <apex:pageBlock title="Contact Interest">
+                    <div id="logger">
+                    </div>
+                    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                    <br/>
+                    <div id="tweetList"/>
+                </apex:pageBlock>
+            </td>
+        </tr>
+    </table>
+
+
+
+    <script language="JavaScript">
+    var herokuAppName = "heroku-app-endpoint";
+    var tweetData = [];
+    function fetchTweetData(twitterHandle){
+        j$( "#container" ).empty();
+        j$( "#tweetList" ).empty();
+        j$( "#logger" ).show();
+        j$( "#logger" ).text( "Loading tweets for @"+twitterHandle );
+        j$.ajax({
+            url: "http://"+herokuAppName+".herokuapp.com/tweets/handles/"+twitterHandle,
+            context: document.body
+        }).done(function(data) {
+            tweetData = data;
+            initChart();
+            populateTweetList();
+            j$( "#logger" ).hide();
+        });
+    }
+
+
+    function initChart() {
+        chart = new Highcharts.Chart({
+            chart: {
+                type: 'areaspline',
+                renderTo : 'container'
+            },
+            title: {
+                text: 'Contact Interest Analysis about <b>#AcmeInc</b>'
+            },
+            subtitle: {
+                text: 'Calculated based on Tweets'
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    millisecond: '%H:%M:%S.%L',
+                    second: '%H:%M:%S',
+                    minute: '%H:%M',
+                    hour: '%H:%M',
+                    day: '%e. %b',
+                    week: '%e. %b',
+                    month: '%b \'%y',
+                    year: '%Y'
+                },
+                title: {
+                    text: 'Date'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Tweet Score'
+                }
+            },
+            tooltip: {
+                headerFormat: '<b>{point.x:%e %b %Y %l:%M %P}</b><br>',
+                pointFormat: 'Score : <b>{point.y}</b>'
+            },
+
+            series: [{
+                name: 'Tweet Score',
+                data: getDataFromTweetData(tweetData),
+                color: '#00ab00',
+                negativeColor: '#ab0000'
+            }]
+        });
+    }
+
+    function getDataFromTweetData(tweetData){
+        var returnData = new Array();
+        for(var i = tweetData.length-1; i >= 0 ; i--){
+            var dataPoint = new Array();
+            dataPoint[0] = tweetData[i].date;
+            dataPoint[1] = tweetData[i].score;
+            returnData.push(dataPoint);
+        }
+        return returnData;
+    }
+
+    function populateTweetList(){
+        for(var i = 0; i < tweetData.length; i++){
+            document.getElementById("tweetList").innerHTML += getHTMLForTweet(tweetData[i]);
+        }
+    }
+
+    function getHTMLForTweet(tweet){
+        var html ="<table width='80%' class='tweetBlock'><tr><td width='75px'><img src='https://pbs.twimg.com/profile_images/468343244804198401/MKTZ6B9f_bigger.jpeg'/></td><td><table border='0'>";
+        html += "<tr><th align='left'><a class='hashtag' href='https://www.twitter.com/@"+tweet.handle+"' target='blank'>@" + tweet.handle + "</a></th></tr>";
+        html += "<tr><td class='tweetDate'>" + new Date(tweet.date).toUTCString() + "</td></tr>";
+        html += "<tr><td>" + tweet.message.replace(/(^|\W)(#[a-z\d][\w-]*)/ig, '$1<span><a class="hashtag" href="https://www.twitter.com/$2" target="blank">$2</a></span>') + "</td></tr>";
+        html += "</table></tr></td></table><br/>";
+        return html;
+    }
+
+    j$ = jQuery.noConflict();
+    j$( document ).ajaxError(function() {
+        j$( "#logger" ).show();
+        j$( "#logger" ).text( "Error in reading tweets" );
+        j$( "#container" ).empty();
+        j$( "#tweetList" ).empty();
+    });
+    j$(document).ready(function() {
+        fetchTweetData("Vivek_Ganesan");
+    });
+    </script>
+
+</apex:page>
