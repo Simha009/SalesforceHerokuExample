@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class TweetDAOImplTest {
 
-    @Test
+    //@Test
     public void testSingleCreationAndDeletion(){
         Tweet tweet = new Tweet();
         Date createdDate = new Date();
@@ -40,7 +40,7 @@ public class TweetDAOImplTest {
         tweetDAO.remove(timeQuery);
     }
 
-    @Test
+    //@Test
     public void testRandomTweetCreationAndDeletion(){
 
         Date startDate = new Date(1406871858000l);
