@@ -3,7 +3,7 @@ Salesforce-Heroku Sample Application
 
 This repository contains sample code-base for an application to extend the capabilities of Salesforce using Heroku.
 
-This application was demonstrated during Dreamforce 2014 at the session "Add Big Data Analytics to Your Salesforce App Using Heroku
+This application was demonstrated during [Dreamforce 2014](http://www.salesforce.com/dreamforce/DF14/) at the session "Add Big Data Analytics to Your Salesforce App Using Heroku
 "
 
 What does this application do?
