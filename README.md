@@ -3,6 +3,9 @@ Salesforce-Heroku Sample Application
 
 This repository contains sample code-base for an application to extend the capabilities of Salesforce using Heroku.
 
+This application was demonstrated during Dreamforce 2014 at the session "Add Big Data Analytics to Your Salesforce App Using Heroku
+"
+
 What does this application do?
 ----
 This sample application listens to Twitter for tweets with specific hash tags, scores the tweets on a numeric scale of happiness (postiveness) and stores the scored tweets into a MongoDB collection with name `tweet`.
