@@ -54,6 +54,6 @@ How to use?
 
 * Go to [Heroku Apps Dashboard](http://dashboard.heroku.com) and set worker dyno to size '1' and web dyno size to '1'.
 
-* Copy the contents of the file ```ContactInterestAnalyzer.vfp``` and paste it into a newly created Visualforce Page in your Salesforce Developer organization.
+* Copy the contents of the file ```ContactInterestAnalyzer.page``` and paste it into a newly created Visualforce Page in your Salesforce Developer organization.
 
 * Add a custom field to with name ```Twitter_Handle__c``` to the Contact Salesforce Object.
