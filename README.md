@@ -19,8 +19,8 @@ Pre-requisites
 3. MongoDB (Preferably as a web service, like [Compose.io](http://www.compose.io))
 4. [Heroku](http://www.heroku.com) Account
 5. Your own [Twitter application](https://apps.twitter.com/) with
-  a. Consumer key
-  b. Consumer Secret
+  * Consumer key
+  * Consumer Secret
 6. [Salesforce.com](http://www.salesforce.com) Developer Account
 7. A [Salesforce.com](http://www.salesforce.com) Developer Organization
 
