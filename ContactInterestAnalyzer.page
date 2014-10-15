@@ -70,9 +70,9 @@
         j$( "#container" ).empty();
         j$( "#tweetList" ).empty();
         j$( "#logger" ).show();
-        j$( "#logger" ).text( "Loading tweets for @"+twitterHandle );
+        j$( "#logger" ).text( "Loading tweets for @"+twitterHandle);
         j$.ajax({
-            url: "http://"+herokuAppName+".herokuapp.com/tweets/handles/"+twitterHandle,
+            url: "https://"+herokuAppName+".herokuapp.com/tweets/handles/"+twitterHandle,
             context: document.body
         }).done(function(data) {
             tweetData = data;
